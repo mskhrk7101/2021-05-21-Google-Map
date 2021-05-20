@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Map</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+    <div class="form row">
+        <div class="col-md-1 col-sm-2">
+            <select class="form-control" id="cities">
+                <option value="札幌">札幌</option>
+                <option value="仙台">仙台</option>
+                <option value="東京">東京</option>
+                <option value="名古屋">名古屋</option>
+                <option value="大阪">大阪</option>
+                <option value="広島">広島</option>
+                <option value="博多">博多</option>
+                <option value="那覇">那覇</option>
+            </select>
+        </div>
+    </div>
+    <div class="map">
+        <div id="map">ここにMapを表示</div>
+    </div>
+    <div class="events">
+        <h3>messages</h3>
+        <div id="messages"></div>
+    </div>
+
+
+
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTGtAzG0PC8cK18MvvHn-XLyKfV4pwiRA&callback=initMap"
+        type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        var map = new google.maps.Map(document.getElementById("map"));
+
+        var cities = {
+            "札幌": { lat: 43.068827749853206, lng: 141.35072872873306 },
+            "仙台": { lat: 38.260308491061515, lng: 140.88245895470777 },
+            "東京": { lat: 35.680887679962254, lng: 139.7670622387369 },
+            "名古屋": { lat: 35.17112546369204, lng: 136.88148325275324 },
+            "大阪": { lat: 34.70271561243239, lng: 135.49594627711318 },
+            "広島": { lat: 34.39780407143576, lng: 132.47529540855018 },
+            "博多": { lat: 33.58986826670316, lng: 130.42068369873135 },
+            "那覇": { lat: 26.207107000858763, lng: 127.6521284711176 },
+        };
+
+        var skyTree = { lat: 35.710235431914825, lng: 139.81066675462066 };
+        var tokyoTower = { lat: 35.658780976347195, lng: 139.74544362578345 };
+
+        function initMap() {
+            var opts = {
+                center: new google.maps.LatLng(35.539001, 134.228468),
+                zoom: 13
+            };
+            var map = new google.maps.Map(document.getElementById("map"), opts);
+            // function initMap() {
+            //     var map = new google.maps.Map(document.getElementById('map'), {
+            //         center: { lat: 35.6811673, ing: 139.7648629 },
+            //         zoom: 12
+            //     });
+            var select = document.getElementById("cities");
+            select.addEventListener("change", function (e) {
+                var key = e.target.value;
+                map.setCenter(cities[key]);
+            });
+
+            var marker1 = new google.maps.Marker({
+                position: tokyoTower,
+                map: map,
+                title: "東京タワー"
+            });
+            var marker2 = new google.maps.Marker({
+                position: skyTree,
+                map: map,
+                title: "スカイツリー"
+            });
+            var directionsService = new google.maps.DirectionsService();
+            var directionsRenderer = new google.maps.DirectionsRenderer();
+            directionsRenderer.setMap(map);
+            var request = {
+                origin: tokyoTower,
+                destination: skyTree,
+                travelMode: "DRIVING",
+            };
+            directionsService.route(request, function (result, status) {
+                if (status === 'OK') {
+                    addMessage(JSON.stringify(result, null, 2));
+                    directionsRenderer.setDirections(result);
+                } else {
+                    addMessage("APIの実行に失敗しました:" + status);
+                }
+            });
+        }
+        function addMessage(msg) {
+            var events = document.getElementById("messages");
+            var pre = document.createElement("pre");
+            pre.innerHTML = msg;
+            events.appendChild(pre);
+        }
+    </script>
+</body>
+
+</html>
