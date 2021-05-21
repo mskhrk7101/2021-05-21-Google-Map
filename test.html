@@ -57,15 +57,18 @@
 
         function initMap() {
             var opts = {
-                center: new google.maps.LatLng(35.539001, 134.228468),
+                center: new google.maps.LatLng(33.58689665950803, 130.39439389525194),
                 zoom: 13
             };
             var map = new google.maps.Map(document.getElementById("map"), opts);
+
             // function initMap() {
             //     var map = new google.maps.Map(document.getElementById('map'), {
             //         center: { lat: 35.6811673, ing: 139.7648629 },
             //         zoom: 12
             //     });
+
+
             var select = document.getElementById("cities");
             select.addEventListener("change", function (e) {
                 var key = e.target.value;
